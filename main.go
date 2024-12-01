@@ -1,18 +1,63 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
+	"slices"
+	"strconv"
 )
 
-func main() {
-	file, err := os.ReadFile("input")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+func day1_part1() int {
+	lists, _ := os.ReadFile("input")
+	listA := make([]int, 0, 100)
+	listB := make([]int, 0, 100)
+	for _, line := range bytes.Split(lists, []byte("\n")) {
+		parts := bytes.Split(line, []byte(" "))
+		numA, _ := strconv.Atoi(string(parts[0]))
+		numB, _ := strconv.Atoi(string(parts[len(parts)-1]))
+		listA = append(listA, numA)
+		listB = append(listB, numB)
 	}
 
-	contents := string(file)
-	result := trebuchet(contents)
-	fmt.Println(result)
+	slices.Sort(listA)
+	slices.Sort(listB)
+
+	distance := 0
+	for i := range listA {
+		diff := int(listA[i]) - int(listB[i])
+		if diff < 0 {
+			diff = -diff
+		}
+		distance += diff
+	}
+
+	return distance
+}
+
+func day1_part2() int {
+	lists, _ := os.ReadFile("input")
+
+	rightFreq := make(map[int]int)
+	leftNums := make([]int, 0)
+
+	for _, line := range bytes.Split(lists, []byte("\n")) {
+		parts := bytes.Split(line, []byte(" "))
+		numA, _ := strconv.Atoi(string(parts[0]))
+		numB, _ := strconv.Atoi(string(parts[len(parts)-1]))
+
+		leftNums = append(leftNums, numA)
+		rightFreq[numB]++
+	}
+
+	simScore := 0
+	for _, leftNum := range leftNums {
+		simScore += leftNum * rightFreq[leftNum]
+	}
+
+	return simScore
+}
+
+func main() {
+	fmt.Println(day1_part2())
 }
