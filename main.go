@@ -141,6 +141,57 @@ func parseMul(text string) (int, int, bool) {
 	return x * y, closePos + 1, true
 }
 
+func day4_part1() int {
+	content, _ := os.ReadFile("input")
+	lines := strings.Split(strings.TrimSpace(string(content)), "\n")
+	searchWord := "XMAS"
+	searchWordReverse := "SAMX"
+	searchWordLen := len(searchWord)
+	found := 0
+
+	for i, line := range lines {
+		for j := range line {
+			if j+searchWordLen <= len(line) && line[j:j+searchWordLen] == searchWord {
+				found++
+			}
+			if j+searchWordLen <= len(line) && line[j:j+searchWordLen] == searchWordReverse {
+				found++
+			}
+
+			if i+searchWordLen <= len(lines) {
+				word := ""
+				for k := 0; k < searchWordLen; k++ {
+					word += string(lines[i+k][j])
+				}
+				if word == searchWord || word == searchWordReverse {
+					found++
+				}
+			}
+
+			if i+searchWordLen <= len(lines) && j+searchWordLen <= len(line) {
+				word := ""
+				for k := 0; k < searchWordLen; k++ {
+					word += string(lines[i+k][j+k])
+				}
+				if word == searchWord || word == searchWordReverse {
+					found++
+				}
+			}
+
+			if i-searchWordLen+1 >= 0 && j+searchWordLen <= len(line) {
+				word := ""
+				for k := 0; k < searchWordLen; k++ {
+					word += string(lines[i-k][j+k])
+				}
+				if word == searchWord || word == searchWordReverse {
+					found++
+				}
+			}
+		}
+	}
+	return found
+}
+
 func parseInt(s string) int {
 	x, _ := strconv.Atoi(s)
 	return x
@@ -154,5 +205,5 @@ func abs(x int) int {
 }
 
 func main() {
-	fmt.Println(day3_part1())
+	fmt.Println(day4_part1())
 }
