@@ -149,42 +149,27 @@ func day4_part1() int {
 	searchWordLen := len(searchWord)
 	found := 0
 
-	for i, line := range lines {
-		for j := range line {
-			if j+searchWordLen <= len(line) && line[j:j+searchWordLen] == searchWord {
-				found++
-			}
-			if j+searchWordLen <= len(line) && line[j:j+searchWordLen] == searchWordReverse {
-				found++
-			}
+	maxRow := len(lines)
+	maxCol := len(lines[0])
 
-			if i+searchWordLen <= len(lines) {
-				word := ""
-				for k := 0; k < searchWordLen; k++ {
-					word += string(lines[i+k][j])
-				}
-				if word == searchWord || word == searchWordReverse {
-					found++
-				}
-			}
+	directions := [][2]int{{0, 1}, {1, 0}, {1, 1}, {-1, 1}}
 
-			if i+searchWordLen <= len(lines) && j+searchWordLen <= len(line) {
-				word := ""
-				for k := 0; k < searchWordLen; k++ {
-					word += string(lines[i+k][j+k])
-				}
-				if word == searchWord || word == searchWordReverse {
-					found++
-				}
-			}
-
-			if i-searchWordLen+1 >= 0 && j+searchWordLen <= len(line) {
-				word := ""
-				for k := 0; k < searchWordLen; k++ {
-					word += string(lines[i-k][j+k])
-				}
-				if word == searchWord || word == searchWordReverse {
-					found++
+	for i := 0; i < maxRow; i++ {
+		for j := 0; j < maxCol; j++ {
+			for _, dir := range directions {
+				for _, word := range []string{searchWord, searchWordReverse} {
+					match := true
+					for k := 0; k < searchWordLen; k++ {
+						ni := i + k*dir[0]
+						nj := j + k*dir[1]
+						if ni < 0 || nj < 0 || ni >= maxRow || nj >= maxCol || lines[ni][nj] != word[k] {
+							match = false
+							break
+						}
+					}
+					if match {
+						found++
+					}
 				}
 			}
 		}
