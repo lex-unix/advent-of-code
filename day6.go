@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"slices"
 )
@@ -29,28 +30,21 @@ func day6_part1() int {
 	}
 
 	y, x := intialGuardPosition(m)
-	m[y][x] = 'X'
-	uniquePositions := 1
-
 	dx := 0
 	dy := -1
 
-	for {
-		for inBounds(x+dx, y+dy) && m[y+dy][x+dx] != '#' {
-			x += dx
-			y += dy
-			if m[y][x] != 'X' {
-				m[y][x] = 'X'
-				uniquePositions++
-			}
+	set := NewSet[string]()
+	for inBounds(x, y) {
+		set.Add(fmt.Sprintf("%d:%d", x, y))
+		nx := x + dx
+		ny := y + dy
+		if inBounds(nx, ny) && m[ny][nx] == '#' {
+			dx, dy = -dy, dx
+		} else {
+			x = nx
+			y = ny
 		}
-		if !inBounds(x+dx, y+dy) {
-			break
-		}
-		oldDx := dx
-		dx = -dy
-		dy = oldDx
 	}
 
-	return uniquePositions
+	return set.Size()
 }
