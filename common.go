@@ -18,3 +18,12 @@ func abs(x int) int {
 	}
 	return x
 }
+
+func count[S ~[]E, E comparable](s S, target E) (total int) {
+	for _, v := range s {
+		if v == target {
+			total++
+		}
+	}
+	return
+}
