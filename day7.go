@@ -2,33 +2,36 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 )
 
-func day7_part1() int {
+func day7_part2() int {
 	input, _ := os.ReadFile("input")
 	lines := bytes.Split(bytes.TrimSpace(input), newLine)
 	total := 0
 	for _, line := range lines {
 		parts := strings.Split(string(line), ": ")
-		sum := parseInt(string(parts[0]))
-		operandsCh := strings.Fields(parts[1])
-		operands := make([]int, len(operandsCh))
-		for i, num := range operandsCh {
+		target := parseInt(string(parts[0]))
+		nums := strings.Fields(parts[1])
+		operands := make([]int, len(nums))
+		for i, num := range nums {
 			operands[i] = parseInt(string(num))
 		}
-		if validEquation(sum, operands[0], operands[1:]) {
-			total += sum
+		if validEquation(target, operands[0], operands[1:]) {
+			total += target
 		}
-
 	}
 	return total
 }
 
-func validEquation(sum, curr int, operands []int) bool {
+func validEquation(target, curr int, operands []int) bool {
 	if len(operands) == 0 {
-		return curr == sum
+		return curr == target
 	}
-	return validEquation(sum, curr+operands[0], operands[1:]) || validEquation(sum, curr*operands[0], operands[1:])
+	mul := curr * operands[0]
+	add := curr + operands[0]
+	con := parseInt(fmt.Sprintf("%d%d", curr, operands[0]))
+	return validEquation(target, add, operands[1:]) || validEquation(target, mul, operands[1:]) || validEquation(target, con, operands[1:])
 }
