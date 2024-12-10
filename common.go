@@ -29,6 +29,11 @@ func (s *Set[T]) Size() int {
 	return len(s.m)
 }
 
+func (s *Set[T]) Exists(k T) bool {
+	_, ok := s.m[k]
+	return ok
+}
+
 func parseInt(s string) int {
 	x, _ := strconv.Atoi(s)
 	return x
