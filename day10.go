@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
@@ -31,7 +30,6 @@ func day10_part1() int {
 func trailHeadScore(i, j int, hikingMap [][]int) int {
 	n := len(hikingMap)
 	m := len(hikingMap[0])
-	visited := NewSet[string]()
 	var passableTrails func(i, j, next int) int
 	passableTrails = func(i, j, next int) int {
 		if i >= n || i < 0 || j >= m || j < 0 {
@@ -40,9 +38,7 @@ func trailHeadScore(i, j int, hikingMap [][]int) int {
 		if hikingMap[i][j] != next {
 			return 0
 		}
-		key := fmt.Sprintf("%d:%d", i, j)
-		if next == 9 && !visited.Exists(key) {
-			visited.Add(key)
+		if next == 9 {
 			return 1
 		}
 		next++
