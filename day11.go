@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"slices"
 	"strconv"
@@ -34,4 +35,40 @@ func day11_part1() int {
 
 	}
 	return len(stones)
+}
+
+func day11_part2() int {
+	input, _ := os.ReadFile("input")
+	stones := strings.Fields(string(input))
+	memo := make(map[string]int)
+	var breakStone func(stone string, blinks int) int
+	breakStone = func(stone string, blinks int) int {
+		key := fmt.Sprintf("%s:%d", stone, blinks)
+		if count, ok := memo[key]; ok {
+			return count
+		}
+		if blinks == 0 {
+			memo[key] = 1
+			return memo[key]
+		}
+		var count int
+		if stone == "0" {
+			count = breakStone("1", blinks-1)
+		} else if len(stone)%2 == 0 {
+			half := len(stone) / 2
+			left := strconv.Itoa(parseInt(stone[:half]))
+			right := strconv.Itoa(parseInt(stone[half:]))
+			count = breakStone(left, blinks-1) + breakStone(right, blinks-1)
+		} else {
+			count = breakStone(strconv.Itoa(parseInt(stone)*2024), blinks-1)
+		}
+		memo[key] = count
+		return memo[key]
+	}
+
+	stonesLen := 0
+	for _, stone := range stones {
+		stonesLen += breakStone(stone, 75)
+	}
+	return stonesLen
 }
